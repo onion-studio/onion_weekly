@@ -47,6 +47,45 @@ app.post("/form", (req, res) => {
   );
 });
 
+app.post("/resolve/:id", (req, res) => {
+  const id = req.params.id;
+  const connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
+  });
+
+  connection.query(
+    `UPDATE issue SET status = 'resolved' WHERE id = ${id}`,
+    function(error, results, fields) {
+      if (error) throw error;
+      res.redirect("/");
+      connection.end();
+    }
+  );
+});
+
+app.get("/issues/:id", (req, res) => {
+  const id = req.params.id;
+  const connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
+  });
+
+  connection.query(`SELECT * FROM issue WHERE id = ${id}`, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.render("issue", { issue: results[0] });
+    connection.end();
+  });
+});
+
 app.listen(3000, () => {
   console.log("App listening on port 3000.");
 });

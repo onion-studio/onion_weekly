@@ -8,9 +8,12 @@ html
         each issue in issues
           tr
             td= issue.id
-            td= issue.title
-            td= issue.content
+            td
+              a(href="/issues/" + issue.id)= issue.title
             td= issue.status
             td= issue.created_at
             td= issue.author_id
             td= issue.assignee_id
+            td
+              form(action="/resolve/" + issue.id , method="post")
+                button resolve
