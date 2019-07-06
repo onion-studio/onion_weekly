@@ -5,6 +5,8 @@ const app = express();
 const mysql = require("mysql");
 
 app.set("view engine", "pug");
+app.use(express.urlencoded({ extended: false }));
+
 app.get("/", (req, res) => {
   const connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -13,10 +15,36 @@ app.get("/", (req, res) => {
     database: process.env.DB_NAME
   });
 
-  connection.query("SELECT * FROM user", function(error, results, fields) {
+  connection.query("SELECT * FROM issue", function(error, results, fields) {
     if (error) throw error;
-    res.render("index", { users: results });
+    res.render("index", { issues: results });
+    connection.end();
   });
+});
+
+app.get("/form", (req, res) => {
+  res.render("form");
+});
+
+app.post("/form", (req, res) => {
+  const connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
+  });
+  const { author_id, assignee_id, title, content } = req.body;
+  connection.query(
+    `
+    INSERT INTO issue (author_id, assignee_id, title, content, status, created_at) 
+    VALUES (${author_id}, ${assignee_id ||
+      null}, '${title}', '${content}', 'open', NOW())`,
+    function(error, results, fields) {
+      if (error) throw error;
+      connection.end();
+      res.redirect("/");
+    }
+  );
 });
 
 app.listen(3000, () => {

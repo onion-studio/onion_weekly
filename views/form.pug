@@ -1,0 +1,13 @@
+h1 hi hi
+
+form(action="/form", method="post")
+  select(name='author_id', required)
+    option(value=1) Jeesoo
+    option(value=2) Seungha
+  select(name='assignee_id')
+    option(selected)
+    option(value=1) Jeesoo
+    option(value=2) Seungha
+  input(type='text', name='title', required)
+  textarea(name='content')
+  button 전송

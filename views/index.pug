@@ -5,7 +5,12 @@ html
     h1 onion weekly
     table
       tbody
-        each user in users
+        each issue in issues
           tr
-            td= user.id
-            td= user.name
+            td= issue.id
+            td= issue.title
+            td= issue.content
+            td= issue.status
+            td= issue.created_at
+            td= issue.author_id
+            td= issue.assignee_id
